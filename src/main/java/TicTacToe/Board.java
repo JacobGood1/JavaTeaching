@@ -1,35 +1,133 @@
 package TicTacToe;
 
+import java.lang.reflect.AccessFlag;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Board {
     int dimensions;
-    ArrayList<Square> board = new ArrayList<>();
-    private Board(int dimensions) {
-        this.dimensions = dimensions * dimensions;
-        IntStream.range(0, this.dimensions).forEach(i -> board.add(Square.makeSquare("blank")));
-        
+    ArrayList<ArrayList<Square>> board = new ArrayList<>();
+    public Board(int dimensions) {
+        this.dimensions = dimensions;
+        IntStream.range(0, this.dimensions).forEach(y -> {
+            var tempBoard = new ArrayList<Square>();
+            IntStream.range(0, this.dimensions).forEach(x -> {
+                tempBoard.add(new Square(x,y));
+            });
+            board.add(tempBoard);
+        });
     }
-    private Board setSquareNeighbors() {
-        IntStream.range(0, dimensions).forEach(i -> board.get(i).setSquareNeighbors(i, dimensions, this));
-        return this;
-    }
-    public Square get(int i){
-        return board.get(i);
-    }
-
-    
     public void displayBoard() {
-        for (int i = 0; i < Math.sqrt(dimensions); i++) {
-            for (int j = 0; j < Math.sqrt(dimensions); j++) {
-                System.out.print(board.get(i + j));
+        board.forEach(System.out::println);
+    }
+    String checkHorizontal(){
+        for (var row : board) {
+            var winner = new Winner(dimensions);
+            for (var s : row) {
+                winner.updateSquareCount(s.toString());
             }
-            System.out.println();   
+            if (winner.isThereAWinner()){
+                return winner.whoIsWinner();
+            }
+        }
+        return "-";
+    }
+    String checkVertical(){
+        for (int c = 0; c < dimensions; c++) {
+            var winner = new Winner(dimensions);
+            for (int r = 0; r < dimensions; r++) {
+                winner.updateSquareCount(board.get(r).get(c).toString());
+            }
+            if (winner.isThereAWinner()){
+                return winner.whoIsWinner();
+            }
+        }
+        return "-";
+    }
+    
+    String checkDiagonal(){
+        var winner = new Winner(dimensions);
+        for (int i = 0; i < dimensions; i++) {
+            winner.updateSquareCount(board.get(i).get(i).toString());
+        }
+        if (winner.isThereAWinner()){
+            return winner.whoIsWinner();
+        }
+        winner = new Winner(dimensions);
+        for (int x = dimensions - 1, y = 0; x >= 0 && y < dimensions; x--, y++) {
+            winner.updateSquareCount(board.get(y).get(x).toString());
+        }
+        if (winner.isThereAWinner()){
+            return winner.whoIsWinner();
+        }
+        return "-";
+    }
+    void placeLetter(String letter, int x, int y){
+        var square = board.get(y).get(x);
+        if(letter.equals("X")) {
+            square.makeX();
+        }
+        else {
+            square.makeO();
         }
     }
+    Square getSquare(int x, int y){
+        return board.get(y).get(x);
+    }
 
-    public static Board makeBoard(int dimensions) {
-        return new Board(dimensions).setSquareNeighbors();
+    Board cloneBoard() {
+        var newBoard = new Board(this.dimensions);
+        for (int i = 0; i < dimensions; i++) {
+            var temp = new ArrayList<Square>();
+            for (var s: board.get(i)) {
+                temp.add(s.cloneMe());
+            }
+            newBoard.board.set(i, temp);
+        }
+        return newBoard; 
+        
+    }
+    public int winnerScore(){
+        var scoreDist = Map.of("X", 1, "O", -1, "-", 0);
+        return
+        Stream.of(checkHorizontal(),checkVertical(), checkDiagonal())
+              .reduce(0, (acc,next) -> {
+                  if(acc != 0){
+                      return acc;
+                  } else {
+                      return scoreDist.get(next);
+                  }
+              }, (left, right) -> left);
+        
+    }
+    public boolean isBoardFull(){
+        var isFull = true;
+        for (var row : board) {
+            for (var s : row) {
+                if(!s.isTaken()){
+                    isFull = false;
+                }
+            }
+        }
+        return isFull;
+    }
+    public boolean isGameOver(int winnerScore){
+        return isBoardFull() || winnerScore != 0;
+    }
+    
+    public  List<Square> getEmptySquares(){
+        var emptySquares = new ArrayList<Square>();
+        for (var row : board) {
+            for (var s : row) {
+                if(!s.isTaken()){
+                    emptySquares.add(s);
+                }
+            }
+        }
+        return emptySquares;
     }
 }
