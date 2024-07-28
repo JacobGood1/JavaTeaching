@@ -1,7 +1,9 @@
 package DesignPatterns.Structural.Decorator;
 
 import java.util.Arrays;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class Goblin {
     Function<String, String> punch; 
@@ -24,15 +26,17 @@ public class Goblin {
         this.punch = 
                 Arrays.stream(punches)
                       .reduce(Function::andThen)
-                      .get();
+                      .get(); // f(g(x))
     }
 
     public static void main(String[] args) {
-        var gobby = new Goblin(Goblin::foggyPunch, Goblin::soggyPunch, Goblin::noodlyPunch, Goblin::soggyPunch);
+        var gobby = new Goblin(Goblin::foggyPunch, Goblin::soggyPunch);
         System.out.println(
             gobby.punch()
-                
         );
+
+        
+        
     }
 
     

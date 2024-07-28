@@ -32,15 +32,9 @@ public class FSM {
     
     public void run(){
         switch (currentState){
-            case enter:
-                enter();
-                break;
-            case exe:
-                exe();
-                break;
-            case exit:
-                exit();
-                break;
+            case enter -> enter();
+            case exe -> exe();
+            case exit -> exit();
         }
     }
     
