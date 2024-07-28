@@ -1,0 +1,1 @@
+we will use simple functions for our implementation, we could also change the old pattern with records
