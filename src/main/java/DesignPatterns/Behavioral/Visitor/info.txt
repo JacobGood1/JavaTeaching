@@ -1,0 +1,10 @@
+visitor pattern is just double dispatch, if your language supports multiple dispatch
+this pattern is subsumed by that feature
+
+multiple dispatch is where you dispatch a method based on ALL arguments
+
+ex: 
+a.f(b) => "a with b dispatch"
+a.f(c) => "a with c dispatch"
+
+those two calls would actually be completely different method implementations!

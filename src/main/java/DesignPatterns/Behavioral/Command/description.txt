@@ -1,1 +1,2 @@
-this pattern allows you to pass around "code" to be executed later, the code is encapsulated into objects
+this pattern allows you to pass around "code" to be executed later, 
+the code is encapsulated into objects
