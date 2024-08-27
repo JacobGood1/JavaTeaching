@@ -7,6 +7,8 @@ from dataclasses import dataclass
 # move mouse
 # auto.moveTo(100, 100, 5, auto.easeInCubic)
 from multipledispatch import dispatch
+from pyglet.window import Window
+import pyglet
 
 #### DESTRUCTURING ####
 
@@ -69,10 +71,10 @@ from multipledispatch import dispatch
 # print(tail)    # 5
 
 #### ANONYMOUS VARIABLES ####
-# who cares variable/argument 
+# who cares variable/argument
 
 # a, _, b = (1,2,3)
-# print(f"I only care about {a} and {b}") 
+# print(f"I only care about {a} and {b}")
 
 #### KEYWORD ARGUMENTS ####
 
@@ -91,7 +93,7 @@ from multipledispatch import dispatch
 # class Actions:
 #     kek: int
 
-# # data is inherited from right to left so you have to instantiate health and attack before kek 
+# # data is inherited from right to left so you have to instantiate health and attack before kek
 # @dataclass
 # class Person(Actions,Entity):
 #     name: str
@@ -125,7 +127,7 @@ from multipledispatch import dispatch
 #     print(x)
 
 
-####  POSITIONAL ARGUMENTS VS KEYWORD ARGUMENTS ####
+####  POSITIONAL ARGUMENTS AND KEYWORD ARGUMENTS ####
 def f(a, b, c):
     print(a, b, c)
 
@@ -146,18 +148,18 @@ print([x*2 for x in [1,2,3]])
 # TODO you are here!!!
 
 
-#### STRING SLICING AND FORMATTING #### 
+#### STRING SLICING AND FORMATTING ####
 # syntax is like this [from:to-1:step] or [-from + 1:-to:-step]
 # notes: each {} means to skip or omit
 
 # start at 1, end at 5, step by 2
-# print("abcdefghijkl"[1:5:2]) # "{a}b{c}d{efghijkl}" 
+# print("abcdefghijkl"[1:5:2]) # "{a}b{c}d{efghijkl}"
 
 # you can omit portions of the slice skip each other character in a string
-# print("abcdefghijkl"[::2]) # "a{b}c{d}e{f}g{h}i{j}k" 
+# print("abcdefghijkl"[::2]) # "a{b}c{d}e{f}g{h}i{j}k"
 
 # iterates backwards so it returns lkj
-# print("abcdefghijkl"[-1:-4:-1]) # "{abcdefghi}jkl" 
+# print("abcdefghijkl"[-1:-4:-1]) # "{abcdefghi}jkl"
 
 # a,b,c = (1,2,3) # the string below is an example of interpolation/formatting
 # print(f"{a} {b} {c}") # prints 1 2 3
@@ -217,4 +219,33 @@ attack(Goblin(100, 35), Human(100, 10))
 # fib_gen = fib()
 # for i in range(10):
 #     print(next(fib_gen))
+
+
+# GUI PROGRAMMING
+
+# introduction to pyglet
+# https://pyglet.readthedocs.io/en/latest/
+# pip install pyglet
+
+import pyglet
+from pyglet import shapes
+
+window = pyglet.window.Window(960, 540)
+batch = pyglet.graphics.Batch()
+
+circle = shapes.Circle(700, 150, 100, color=(50, 225, 30), batch=batch)
+square = shapes.Rectangle(200, 200, 200, 200, color=(55, 55, 255), batch=batch)
+rectangle = shapes.Rectangle(250, 300, 400, 200, color=(255, 22, 20), batch=batch)
+rectangle.opacity = 128
+rectangle.rotation = 33
+line = shapes.Line(100, 100, 100, 200, width=19, batch=batch)
+line2 = shapes.Line(150, 150, 444, 111, width=4, color=(200, 20, 20), batch=batch)
+star = shapes.Star(800, 400, 60, 40, num_spikes=50, color=(255, 255, 0), batch=batch)
+
+@window.event
+def on_draw():
+    window.clear()
+    batch.draw()
+
+pyglet.app.run()
 
